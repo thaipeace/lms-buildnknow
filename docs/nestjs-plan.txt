@@ -1,0 +1,558 @@
+Được. Tôi làm theo đúng mục tiêu của bạn: **không mua khóa học, không chạy theo certificate**, mà dùng tài liệu miễn phí chính chủ + project để đạt trình độ **NestJS backend thực chiến/chuyên sâu**.
+
+Tôi đã kiểm tra tài liệu hiện tại: NestJS 11 đang có các sample chính thức trên GitHub, và documentation bao phủ từ DI/dynamic modules/lifecycle/testing đến queues, events, WebSockets và microservices. ([NestJS Documentation][1])
+
+## Lộ trình 8 tuần — NestJS chuyên sâu, $0
+
+Với background của bạn, tôi sẽ **không dành nhiều thời gian cho JavaScript/TypeScript cơ bản**.
+
+### Tuần 1 — Hiểu NestJS thật sự
+
+Mục tiêu không phải biết tạo CRUD, mà phải trả lời được:
+
+> "NestJS chạy như thế nào?"
+
+Học:
+
+* Module
+* Controller
+* Provider
+* Dependency Injection
+* Custom provider
+* Module reference
+* Lifecycle
+* Middleware
+* Pipes
+* Guards
+* Interceptors
+* Exception filters
+* Custom decorators
+
+Đặc biệt học kỹ:
+
+**DI → Provider → Module → Execution Context → Guard/Pipe/Interceptor**
+
+Documentation chính thức hiện có riêng các phần này. ([NestJS Documentation][1])
+
+[NestJS Documentation](https://docs.nestjs.com/?utm_source=chatgpt.com)
+
+### Bài tập
+
+Không làm Todo.
+
+Làm:
+
+```text
+User
+ ├── Controller
+ ├── Service
+ ├── Repository
+ └── Module
+```
+
+Sau đó tự viết:
+
+```text
+Custom Provider
+Custom Decorator
+Custom Pipe
+Custom Guard
+Custom Interceptor
+Exception Filter
+```
+
+Bạn phải hiểu **tại sao NestJS gọi chúng ở thời điểm đó**, chứ không chỉ copy code.
+
+---
+
+# Tuần 2 — REST API production-style
+
+Xây API:
+
+```text
+POST   /auth/login
+POST   /auth/register
+
+GET    /users
+GET    /users/:id
+POST   /users
+PATCH  /users/:id
+DELETE /users/:id
+```
+
+Học:
+
+* DTO
+* Validation
+* Serialization
+* Transformation
+* Pagination
+* Filtering
+* Sorting
+* Error handling
+* Swagger/OpenAPI
+* Configuration
+* Environment variables
+* Logging
+
+Đây là lúc bạn chuyển từ:
+
+> "Tôi biết NestJS"
+
+sang:
+
+> "Tôi có thể viết backend."
+
+---
+
+# Tuần 3 — Database thật
+
+Tôi đề nghị bạn dùng:
+
+**PostgreSQL + Prisma**
+
+hoặc nếu muốn học sâu hơn về ORM:
+
+**PostgreSQL + TypeORM**
+
+Với mục tiêu backend, tôi nghiêng về **Prisma trước**, sau đó đọc TypeORM để biết ecosystem.
+
+Học:
+
+```text
+Database design
+      ↓
+Relations
+      ↓
+Migration
+      ↓
+Transaction
+      ↓
+Pagination
+      ↓
+Index
+      ↓
+Query optimization
+```
+
+Đặc biệt phải hiểu:
+
+```text
+N + 1 query
+transaction
+isolation
+index
+connection pool
+```
+
+Đây là những thứ FE developer chuyển backend thường thiếu.
+
+---
+
+# Tuần 4 — Authentication & Authorization
+
+Phần này rất quan trọng với bạn vì trước đây bạn đã làm JWT.
+
+Không chỉ học:
+
+```text
+JWT → Guard → User
+```
+
+Mà phải hiểu:
+
+```text
+Authentication
+      ↓
+Authorization
+      ↓
+Guard
+      ↓
+ExecutionContext
+      ↓
+Custom decorator
+      ↓
+Role / Permission
+```
+
+Làm:
+
+```text
+User
+Role
+Permission
+```
+
+Ví dụ:
+
+```text
+ADMIN
+ ├── user.read
+ ├── user.write
+ └── user.delete
+
+STAFF
+ ├── user.read
+ └── user.write
+```
+
+Sau đó làm:
+
+```text
+@Roles('ADMIN')
+@Permissions('user.delete')
+```
+
+---
+
+# Tuần 5 — Redis + Queue + realtime
+
+Đây là tuần tôi nghĩ **rất hợp với kinh nghiệm của bạn**.
+
+Học:
+
+### Redis
+
+```text
+Caching
+Session
+Rate limiting
+Distributed lock
+Pub/Sub
+```
+
+### Queue
+
+Dùng:
+
+```text
+BullMQ
+Redis
+NestJS
+```
+
+Ví dụ:
+
+```text
+POST /send-email
+
+        ↓
+
+Queue
+
+        ↓
+
+Worker
+
+        ↓
+
+Email Provider
+```
+
+Sau đó:
+
+```text
+retry
+backoff
+failed jobs
+dead-letter concept
+idempotency
+```
+
+### Realtime
+
+Bạn đã từng làm WebSocket/SSE nên phần này sẽ khá nhanh:
+
+```text
+WebSocket
+SSE
+Gateway
+Events
+Redis Pub/Sub
+```
+
+NestJS chính thức hỗ trợ cả WebSockets và microservices, và các khái niệm như DI, guards, pipes, interceptors có thể dùng xuyên qua các execution context. ([NestJS Documentation][2])
+
+---
+
+# Tuần 6 — Testing + Architecture
+
+Đây là phần **không nên bỏ qua nếu bạn muốn đi Backend lâu dài**.
+
+Học:
+
+```text
+Unit Test
+Integration Test
+E2E Test
+TestingModule
+Mock Provider
+Test Database
+```
+
+Sau đó architecture:
+
+```text
+Controller
+    ↓
+Application Service
+    ↓
+Domain
+    ↓
+Repository
+    ↓
+Database
+```
+
+Nhưng **đừng biến architecture thành giáo điều**.
+
+Bạn phải hiểu:
+
+> Khi nào cần abstraction?
+
+> Khi nào Repository pattern là thừa?
+
+> Khi nào Service quá lớn?
+
+> Khi nào Module nên tách?
+
+---
+
+# Tuần 7 — Advanced NestJS
+
+Đây mới là phần tôi gọi là **NestJS chuyên sâu**.
+
+Học:
+
+### Dynamic Modules
+
+```text
+forRoot()
+forRootAsync()
+register()
+registerAsync()
+```
+
+### Custom Providers
+
+```text
+useClass
+useValue
+useFactory
+useExisting
+```
+
+### Injection Scope
+
+```text
+DEFAULT
+REQUEST
+TRANSIENT
+```
+
+### Lifecycle
+
+```text
+OnModuleInit
+OnApplicationBootstrap
+OnModuleDestroy
+OnApplicationShutdown
+```
+
+### Execution Context
+
+Hiểu:
+
+```text
+HTTP
+RPC
+WebSocket
+```
+
+NestJS documentation mô tả `ExecutionContext` chính là lớp giúp viết guard/interceptor/filter hoạt động trên nhiều loại context này. ([NestJS Documentation][3])
+
+### Discovery / Metadata
+
+Đây là phần rất đáng học nếu muốn hiểu framework sâu.
+
+---
+
+# Tuần 8 — Microservices + Architecture
+
+Không cần biến project thành 20 microservices.
+
+Làm **một monolith tốt trước**.
+
+Sau đó tách:
+
+```text
+API
+ │
+ ├── Auth
+ ├── User
+ ├── Order
+ └── Product
+```
+
+thành:
+
+```text
+API Gateway
+     │
+     ├───────────────┐
+     ↓               ↓
+User Service    Order Service
+                     │
+                     ↓
+                Message Broker
+```
+
+Học:
+
+* TCP
+* Redis transport
+* RabbitMQ
+* Event-driven
+* Request/Response
+* Pub/Sub
+* Message acknowledgement
+* Retry
+* Idempotency
+
+NestJS có abstraction chính thức cho nhiều transport và cả request-response lẫn event-based messaging. ([NestJS Documentation][2])
+
+---
+
+# Project cuối cùng
+
+Tôi **không muốn bạn làm Todo App**.
+
+Làm một hệ thống gần với những gì bạn đã từng làm:
+
+## Trading / Order Management Backend
+
+```text
+                 React / Next.js
+                       │
+                       │ REST
+                       │ WebSocket
+                       ↓
+                ┌──────────────┐
+                │   NestJS API │
+                └──────┬───────┘
+                       │
+        ┌──────────────┼───────────────┐
+        ↓              ↓               ↓
+      Auth           Orders          Market
+        │              │               │
+        ↓              ↓               ↓
+   PostgreSQL       PostgreSQL       Redis
+                       │
+                       ↓
+                    BullMQ
+                       │
+                       ↓
+                    Worker
+```
+
+Có:
+
+* JWT
+* RBAC
+* Users
+* Accounts
+* Orders
+* Order history
+* Products
+* Realtime order updates
+* WebSocket
+* SSE
+* Redis
+* Queue
+* Background worker
+* PostgreSQL
+* Transaction
+* Idempotency
+* Rate limiting
+* Logging
+* Testing
+* Swagger
+* Docker
+
+Đây sẽ là project mà bạn có thể nói trong phỏng vấn:
+
+> "I built a production-style backend with NestJS, PostgreSQL, Redis, WebSocket and background jobs."
+
+---
+
+# Tài liệu miễn phí tôi muốn bạn dùng
+
+**1. NestJS Documentation — nguồn chính**
+
+[NestJS Docs](https://docs.nestjs.com/?utm_source=chatgpt.com)
+
+**2. NestJS GitHub**
+
+[NestJS GitHub](https://github.com/nestjs/nest?utm_source=chatgpt.com)
+
+Repository chính thức có rất nhiều sample; ví dụ sample microservices hiện dùng NestJS 11 và TypeScript hiện đại. ([GitHub][4])
+
+**3. NestJS documentation source**
+
+[NestJS Docs GitHub](https://github.com/nestjs/docs.nestjs.com?utm_source=chatgpt.com)
+
+Nó là source chính thức của documentation. ([GitHub][5])
+
+---
+
+## Còn certificate?
+
+Tôi muốn sửa rõ điểm này so với câu trả lời trước:
+
+**NestJS official certificate hiện không miễn phí.**
+
+Trang khóa học chính thức hiện ghi rõ certificate completion, nhưng các khóa là trả phí; Fundamentals, Advanced Concepts, Architecture & Advanced Patterns, Microservices... đều đang được bán. ([Learn NestJS][6])
+
+Vì vậy với ngân sách **$0**, tôi sẽ không cố tạo ra một "certificate NestJS miễn phí" giả giá trị.
+
+Thay vào đó, CV của bạn có thể có:
+
+```text
+Backend / Fullstack
+
+NestJS
+Node.js
+TypeScript
+PostgreSQL
+Redis
+BullMQ
+WebSocket
+SSE
+REST API
+JWT / RBAC
+Docker
+Linux
+
+Projects
+Trading / Order Management Platform
+- ...
+```
+
+và GitHub repo chứng minh toàn bộ năng lực.
+
+### Một điểm quan trọng dành riêng cho bạn
+
+Bạn **không cần học NestJS từ số 0 theo cách người mới học Node**.
+
+Tôi sẽ bắt đầu bạn ở mức:
+
+**TypeScript/Node đã biết → NestJS internals → production backend → architecture.**
+
+Nếu bạn thực sự muốn học theo kiểu **cấp tốc**, tôi có thể tiếp tục biến roadmap trên thành **lịch 56 ngày cụ thể: Ngày 1 học trang nào → đọc phần nào → code gì → câu hỏi phải trả lời được → bài tập → ngày nào bắt đầu project**, để bạn chỉ mở lên và học từng ngày.
+
+[1]: https://docs.nestjs.com/techniques?utm_source=chatgpt.com "Documentation | NestJS - A progressive Node.js framework"
+[2]: https://docs.nestjs.com/microservices/basics?utm_source=chatgpt.com "Microservices | NestJS - A progressive Node.js framework"
+[3]: https://docs.nestjs.com/fundamentals/execution-context?utm_source=chatgpt.com "Execution context | NestJS - A progressive Node.js framework"
+[4]: https://github.com/nestjs/nest/blob/master/sample/03-microservices/package.json?utm_source=chatgpt.com "nest/sample/03-microservices/package.json at master · nestjs/nest · GitHub"
+[5]: https://github.com/nestjs/docs.nestjs.com?utm_source=chatgpt.com "GitHub - nestjs/docs.nestjs.com: The official documentation https://docs.nestjs.com 📕 · GitHub"
+[6]: https://learn.nestjs.com/?utm_source=chatgpt.com "Official NestJS Courses | NestJS"
