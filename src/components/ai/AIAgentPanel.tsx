@@ -221,7 +221,7 @@ export function AIAgentPanel({ className = "", onClose }: AIAgentPanelProps) {
                 AI Mentor & Giám khảo Kỹ thuật
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Tôi đồng hành cùng bạn để giải thích bản chất kiến trúc, giải đáp thắc mắc và chấm điểm câu trả lời tự vấn.
+                Giải đáp ngắn gọn, đi thẳng vào trọng tâm vấn đề và chấm điểm tự vấn. Bạn có thể hỏi sâu thêm bất cứ khi nào cần.
               </p>
             </div>
 
@@ -517,7 +517,7 @@ export function AIAgentPanel({ className = "", onClose }: AIAgentPanelProps) {
             disabled={isChatting || isEvaluating}
             placeholder={
               apiKey
-                ? "Hỏi bất kỳ điều gì hoặc dán đoạn text cần giải thích..."
+                ? "Hỏi ngắn gọn điều bạn thắc mắc (AI trả lời thẳng vào trọng tâm)..."
                 : "Nhập câu hỏi (hệ thống sẽ yêu cầu API Key nếu chưa có)..."
             }
             rows={2}
