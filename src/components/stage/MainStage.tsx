@@ -6,6 +6,7 @@ import { ArtifactViewer } from "@/components/stage/ArtifactViewer";
 import { OverviewTab } from "@/components/stage/OverviewTab";
 import { SocraticDrillTab } from "@/components/stage/SocraticDrillTab";
 import { NotesTab } from "@/components/stage/NotesTab";
+import { AIAgentPanel } from "@/components/ai/AIAgentPanel";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Compass,
+  Sparkles,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { MasteryLevel } from "@/types/curriculum";
@@ -257,6 +259,11 @@ export function MainStage({ sidebarCollapsed = false, onToggleSidebar }: MainSta
                   <span>Tự vấn ({activeConcept.socraticDrills?.length || 0})</span>
                 </TabsTrigger>
 
+                <TabsTrigger value="ai" className="h-7 px-2.5 text-xs gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+                  <span>Trợ lý AI</span>
+                </TabsTrigger>
+
                 <TabsTrigger value="notes" className="h-7 px-2.5 text-xs gap-1.5">
                   <FileEdit className="h-3.5 w-3.5 text-sky-600" />
                   <span>Ghi chú</span>
@@ -269,12 +276,13 @@ export function MainStage({ sidebarCollapsed = false, onToggleSidebar }: MainSta
               <span className="text-[11px] font-mono text-slate-400 hidden sm:inline">
                 {activeTab === "overview" && "The 'Why' & Mechanics"}
                 {activeTab === "drill" && "Socratic Active Recall"}
+                {activeTab === "ai" && "Gemini AI Tutor & Evaluator"}
                 {activeTab === "notes" && "Personal Insights"}
               </span>
             </div>
 
             {/* Scrollable Tab Content Container */}
-            <div className="flex-1 overflow-y-auto min-h-0 p-3 sm:p-4 scrollbar-thin">
+            <div className={`flex-1 min-h-0 ${activeTab === "ai" ? "overflow-hidden p-0" : "overflow-y-auto p-3 sm:p-4 scrollbar-thin"}`}>
               {/* Tab 1: Overview */}
               <TabsContent value="overview" className="mt-0">
                 <OverviewTab
@@ -292,7 +300,12 @@ export function MainStage({ sidebarCollapsed = false, onToggleSidebar }: MainSta
                 />
               </TabsContent>
 
-              {/* Tab 3: Personal Notes */}
+              {/* Tab 3: AI Assistant */}
+              <TabsContent value="ai" className="mt-0 h-full flex flex-col min-h-0">
+                <AIAgentPanel className="h-full rounded-b-xl" />
+              </TabsContent>
+
+              {/* Tab 4: Personal Notes */}
               <TabsContent value="notes" className="mt-0">
                 <NotesTab concept={activeConcept} />
               </TabsContent>

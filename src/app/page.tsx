@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { CurriculumProvider, useCurriculum } from "@/context/CurriculumContext";
+import { AIProvider, useAI } from "@/context/AIContext";
 import { Topbar } from "@/components/layout/Topbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainStage } from "@/components/stage/MainStage";
@@ -19,9 +20,14 @@ function CoursePlayerShell() {
     hasNextConcept,
     restoreDefaultProjects,
   } = useCurriculum();
+  const { registerSidebarOpener } = useAI();
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [importOpen, setImportOpen] = useState(false);
+
+  useEffect(() => {
+    registerSidebarOpener(() => setSidebarCollapsed(false));
+  }, [registerSidebarOpener]);
 
   useEffect(() => {
     // Open sidebar by default only on larger screens (>= 1024px)
@@ -119,7 +125,9 @@ function CoursePlayerShell() {
 export default function Home() {
   return (
     <CurriculumProvider>
-      <CoursePlayerShell />
+      <AIProvider>
+        <CoursePlayerShell />
+      </AIProvider>
     </CurriculumProvider>
   );
 }

@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo } from "react";
 import { useCurriculum } from "@/context/CurriculumContext";
+import { useAI } from "@/context/AIContext";
+import { AIAgentPanel } from "@/components/ai/AIAgentPanel";
 import {
   ChevronDown,
   ChevronRight,
@@ -13,6 +15,7 @@ import {
   Clock,
   X,
   Compass,
+  Sparkles,
 } from "lucide-react";
 import { MasteryLevel } from "@/types/curriculum";
 
@@ -30,6 +33,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
     openProjectOverview,
     stats,
   } = useCurriculum();
+  const { activeSidebarTab, setActiveSidebarTab, messages } = useAI();
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -121,30 +125,64 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
           ${
             collapsed
               ? "lg:w-0 lg:border-none lg:opacity-0 lg:pointer-events-none"
+              : activeSidebarTab === "ai"
+              ? "lg:w-96 xl:w-[440px] 2xl:w-[480px] lg:border-l lg:border-slate-200 lg:shadow-xs lg:opacity-100"
               : "lg:w-80 xl:w-96 lg:border-l lg:border-slate-200 lg:shadow-xs lg:opacity-100"
           }
         `}
       >
-        {/* Sidebar Header */}
-        <div className="p-3 sm:p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70 shrink-0">
-          <div className="flex items-center gap-2 font-bold text-slate-900 text-sm min-w-0">
-            <BookOpen className="h-4 w-4 text-indigo-600 shrink-0" />
-            <span className="truncate">Nội dung dự án</span>
-            {stats && (
-              <span className="text-[11px] font-mono text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-1.5 py-0.2 rounded-full shrink-0">
-                {stats.masteredCount}/{stats.totalConcepts}
-              </span>
-            )}
+        {/* Sidebar Header with 2 Tabs: Curriculum vs AI Mentor */}
+        <div className="p-2 sm:p-2.5 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => setActiveSidebarTab("curriculum")}
+              className={`flex-1 py-1.5 px-2 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
+                activeSidebarTab === "curriculum"
+                  ? "bg-white text-indigo-700 shadow-2xs font-bold"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <BookOpen className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
+              <span className="truncate">Giáo trình</span>
+              {stats && (
+                <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1 py-0.2 rounded-full hidden sm:inline">
+                  {stats.masteredCount}/{stats.totalConcepts}
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveSidebarTab("ai")}
+              className={`flex-1 py-1.5 px-2 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
+                activeSidebarTab === "ai"
+                  ? "bg-white text-indigo-700 shadow-2xs font-bold"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
+              <span className="truncate">Trợ lý AI</span>
+              {messages.length > 0 && (
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
+              )}
+            </button>
           </div>
+
           <button
             onClick={onToggleCollapse}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer shrink-0"
             title="Đóng sidebar"
             aria-label="Đóng sidebar"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
+
+        {activeSidebarTab === "ai" ? (
+          <AIAgentPanel className="flex-1 min-h-0" onClose={onToggleCollapse} />
+        ) : (
+          <>
 
         {/* Project Overview Quick Link */}
         <div className="p-2 border-b border-slate-200 bg-slate-50/60 shrink-0">
@@ -292,6 +330,8 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
           })
         )}
       </div>
+          </>
+        )}
     </aside>
     </>
   );

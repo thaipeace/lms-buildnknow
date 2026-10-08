@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useCurriculum } from "@/context/CurriculumContext";
+import { useAI } from "@/context/AIContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -45,6 +46,7 @@ export function Topbar({ sidebarCollapsed, onToggleSidebar }: TopbarProps) {
     lastSyncedAt,
     triggerSync,
   } = useCurriculum();
+  const { openAISidebar } = useAI();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -192,6 +194,23 @@ export function Topbar({ sidebarCollapsed, onToggleSidebar }: TopbarProps) {
               </>
             )}
           </button>
+
+          {/* AI Mentor Quick Access Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              openAISidebar();
+              if (sidebarCollapsed && onToggleSidebar) {
+                onToggleSidebar();
+              }
+            }}
+            className="h-8 px-2 sm:px-2.5 text-xs gap-1.5 border-indigo-200/80 bg-indigo-50/60 hover:bg-indigo-100/80 text-indigo-700 font-semibold cursor-pointer shadow-2xs"
+            title="Mở Trợ lý AI Mentor (Gemini)"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-indigo-600 animate-pulse" />
+            <span className="hidden sm:inline">Trợ lý AI</span>
+          </Button>
 
           {/* Desktop Action Buttons */}
           <div className="hidden lg:flex items-center gap-1.5">

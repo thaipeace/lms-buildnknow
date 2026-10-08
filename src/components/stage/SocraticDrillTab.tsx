@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Concept, SocraticDrill, MasteryLevel } from "@/types/curriculum";
 import { useCurriculum } from "@/context/CurriculumContext";
+import { useAI } from "@/context/AIContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,8 @@ import {
   ArrowRight,
   Send,
   Trophy,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { ProblemContextBanner } from "@/components/stage/ProblemContextBanner";
 import confetti from "canvas-confetti";
@@ -29,10 +32,32 @@ interface SocraticDrillTabProps {
 
 export function SocraticDrillTab({ concept, onNavigateNext, hasNext }: SocraticDrillTabProps) {
   const { setConceptMastery, saveUserAnswer, revealHints } = useCurriculum();
+  const { evaluateAnswer, isEvaluating } = useAI();
+  const [evalError, setEvalError] = useState<string | null>(null);
 
   // Local state câu trả lời của user (mặc định lấy từ concept.userAnswer)
   const [answer, setAnswer] = useState(concept.userAnswer || "");
   const [isSaved, setIsSaved] = useState(false);
+
+  const handleRequestAIEvaluation = async () => {
+    if (!answer.trim() || answer.trim().length < 5) {
+      setEvalError("Vui lòng tự diễn giải hoặc lập luận ít nhất vài câu trước khi nhờ AI thẩm định!");
+      setTimeout(() => setEvalError(null), 4000);
+      return;
+    }
+    setEvalError(null);
+
+    // Lưu câu trả lời ngay lập tức
+    saveUserAnswer(concept.id, answer);
+
+    const targetDrill = concept.socraticDrills?.[0] || {
+      id: "general",
+      question: `Lập luận và thấu hiểu bản chất: ${concept.title}`,
+      keyTakeaways: [concept.whyUsed, concept.underTheHood].filter(Boolean),
+    };
+
+    await evaluateAnswer(concept, targetDrill, answer.trim());
+  };
 
   // Danh sách các câu hỏi đã được lật mở gợi ý
   const [revealedQuestions, setRevealedQuestions] = useState<Record<string, boolean>>(() => {
@@ -207,14 +232,45 @@ export function SocraticDrillTab({ concept, onNavigateNext, hasNext }: SocraticD
 
         <Textarea
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          onChange={(e) => {
+            setAnswer(e.target.value);
+            if (evalError) setEvalError(null);
+          }}
           placeholder="Tự giải thích theo cách hiểu của bạn: Cơ chế này hoạt động ra sao? Nếu xảy ra lỗi thì hệ thống xử lý như thế nào?..."
           className="min-h-[110px] sm:min-h-[140px] text-sm border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 leading-relaxed shadow-xs"
         />
 
-        <p className="text-[11px] text-slate-500">
-          💡 Câu trả lời của bạn sẽ được lưu trực tiếp vào LocalStorage máy bạn và tự động xuất kèm khi bạn tải file JSON.
-        </p>
+        {evalError && (
+          <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 animate-in fade-in duration-200">
+            <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+            <span>{evalError}</span>
+          </div>
+        )}
+
+        <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-100">
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            💡 Tự giải thích theo ngôn từ của bạn. Bấm nút để AI chấm điểm và quyết định thông suốt.
+          </p>
+
+          <Button
+            type="button"
+            onClick={handleRequestAIEvaluation}
+            disabled={isEvaluating}
+            className="h-9 sm:h-10 px-4 text-xs sm:text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/25 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0 gap-2"
+          >
+            {isEvaluating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin text-amber-300" />
+                <span>AI Đang Thẩm Định...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
+                <span>🤖 AI Chấm điểm & Đánh giá</span>
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Bộ 3 Nút Đánh Giá Mức Độ Làm Chủ (Self-Assessment Rating) */}
